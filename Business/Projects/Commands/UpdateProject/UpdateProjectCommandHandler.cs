@@ -22,6 +22,7 @@ namespace Business.Projects.Commands.UpdateProject
             }
 
             entity.Name = request.Name;
+            entity.ProjectManagerId = request.ProjectManagerId;
             entity.NameCustomer = request.NameCustomer;
             entity.NameContractor = request.NameContractor;
             entity.DateBeginning = entity.DateBeginning;

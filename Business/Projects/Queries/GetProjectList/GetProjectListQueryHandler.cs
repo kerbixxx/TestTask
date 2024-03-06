@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Business.Interfaces;
+using Domain.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Business.Projects.Queries.GetProjectList
 {
@@ -19,8 +21,40 @@ namespace Business.Projects.Queries.GetProjectList
 
         public async Task<ProjectListVm> Handle(GetProjectListQuery request, CancellationToken cancellationToken)
         {
-            var projectsQuery = await _dbContext.Projects
-                .ProjectTo<ProjectLookupDto>(_mapper.ConfigurationProvider)
+            var query = _dbContext.Projects.AsQueryable();
+
+            if (request.StartDate.HasValue)
+            {
+                query = query.Where(p => p.DateBeginning >= request.StartDate.Value);
+            }
+
+            if (request.EndDate.HasValue)
+            {
+                query = query.Where(p => p.DateEnd <= request.EndDate.Value);
+            }
+
+            if (request.Priority.HasValue)
+            {
+                query = query.Where(p => p.Priority == request.Priority.Value);
+            }
+
+            if (!string.IsNullOrEmpty(request.SortBy))
+            {
+                var parameter = Expression.Parameter(typeof(Project), "p");
+                var property = Expression.Property(parameter, request.SortBy);
+                var lambda = Expression.Lambda<Func<Project, object>>(Expression.Convert(property, typeof(object)), parameter);
+
+                if (request.SortOrder == "asc")
+                {
+                    query = query.OrderBy(lambda);
+                }
+                else
+                {
+                    query = query.OrderByDescending(lambda);
+                }
+            }
+
+            var projectsQuery = await query.ProjectTo<ProjectLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
             return new ProjectListVm { Projects = projectsQuery };

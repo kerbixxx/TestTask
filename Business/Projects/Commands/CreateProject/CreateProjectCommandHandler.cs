@@ -1,6 +1,8 @@
-﻿using Business.Interfaces;
+﻿using Business.Common.Exceptions;
+using Business.Interfaces;
 using Domain.Models;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Business.Projects.Commands.CreateProject
 {
@@ -22,9 +24,21 @@ namespace Business.Projects.Commands.CreateProject
                 DateEnd = request.DateEnd,
                 Priority = request.Priority
             };
-
-            await _dbContext.Projects.AddAsync(project, cancellationToken);
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            var employee = await _dbContext.Employees.FirstOrDefaultAsync(employee=>employee.Id == request.ProjectManagerId, cancellationToken);
+            if (employee == null)
+            {
+                throw new NotFoundException(nameof(Employee), request.ProjectManagerId);
+            }
+            try
+            {
+                project.Employees.Add(employee);
+                await _dbContext.Projects.AddAsync(project, cancellationToken);
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
 
             return project.Id;
         }

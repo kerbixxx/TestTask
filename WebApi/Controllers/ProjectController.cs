@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Business.Projects.Commands.AddEmployeeToProject;
 using Business.Projects.Commands.CreateProject;
+using Business.Projects.Commands.DeleteEmployeeFromProject;
 using Business.Projects.Commands.DeleteProject;
 using Business.Projects.Queries.GetProjectDetails;
 using Business.Projects.Queries.GetProjectList;
@@ -15,9 +17,20 @@ namespace WebApi.Controllers
         public ProjectController(IMapper mapper) => _mapper = mapper;
 
         [HttpGet]
-        public async Task<ActionResult<ProjectListVm>> GetAll()
+        public async Task<ActionResult<ProjectListVm>> GetAll([FromQuery] DateTime? startDate,
+            [FromQuery] DateTime? endDate,
+            [FromQuery] int? priority,
+        [FromQuery] string? sortBy,
+        [FromQuery] string? sortOrder)
         {
-            var query = new GetProjectListQuery();
+            var query = new GetProjectListQuery()
+            {
+                StartDate = startDate,
+                EndDate = endDate,
+                Priority = priority,
+                SortBy = sortBy,
+                SortOrder = sortOrder
+            };
             var vm = await Mediator.Send(query);
             return Ok(vm);
         }
@@ -25,7 +38,7 @@ namespace WebApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProjectDetailsVm>> Get(int id)
         {
-            var query = new GetProjectDetailsQuery()
+            var query = new GetProjectDetailsQuery
             {
                 Id = id
             };
@@ -55,6 +68,32 @@ namespace WebApi.Controllers
             var command = new DeleteProjectCommand
             {
                 Id = id
+            };
+            await Mediator.Send(command);
+            return NoContent();
+        }
+
+        [HttpPost("{projectId}/employees/{employeeId}")]
+        public async Task<IActionResult> AddEmployeeToProject(
+            [FromBody] ManageEmployeeInProjectDto addEmployeeToProjectDto)
+        {
+            var command = new AddEmployeeToProjectCommand
+            {
+                ProjectId = addEmployeeToProjectDto.ProjectId,
+                EmployeeId = addEmployeeToProjectDto.EmployeeId
+            };
+            await Mediator.Send(command);
+            return NoContent();
+        }
+
+        [HttpDelete("{projectId}/employees/{employeeId}")]
+        public async Task<IActionResult> RemoveEmployeeFromProject(
+            [FromBody] ManageEmployeeInProjectDto removeEmployeeFromProjectDto)
+        {
+            var command = new DeleteEmployeeFromProjectCommand
+            {
+                ProjectId = removeEmployeeFromProjectDto.ProjectId,
+                EmployeeId = removeEmployeeFromProjectDto.EmployeeId
             };
             await Mediator.Send(command);
             return NoContent();

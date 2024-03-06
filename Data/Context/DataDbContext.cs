@@ -1,6 +1,7 @@
 ﻿using Business.Interfaces;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace Data.Context
 {
@@ -21,9 +22,14 @@ namespace Data.Context
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Project>()
-                .HasMany(p => p.Employees)
-                .WithMany(e => e.Projects);
+                .HasMany(e => e.Employees)
+                .WithMany(e => e.Projects)
+                .UsingEntity(j => j.ToTable("ProjectEmployee"));
 
+            builder.Entity<Project>()
+                .HasOne(p => p.ProjectManager)
+                .WithMany()
+                .HasForeignKey(p => p.ProjectManagerId);
             base.OnModelCreating(builder);
         }
     }

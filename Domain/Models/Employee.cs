@@ -6,7 +6,6 @@
         public string SecondName { get; set; }
         public string Patronymic { get; set; }
         public string Email { get; set; }
-
-        public List<Project>? Projects = new();
+        public List<Project> Projects { get; set; } = [];
     }
 }
