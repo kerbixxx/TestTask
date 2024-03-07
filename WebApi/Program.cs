@@ -50,11 +50,16 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
-app.UseSwagger();
-app.UseSwaggerUI(config =>
+app.UseSwagger(c =>
 {
-    config.RoutePrefix = string.Empty;
-    config.SwaggerEndpoint("swagger/v1/swagger.json","Sibers API");
+    c.RouteTemplate = "api/swagger/{documentname}/swagger.json";
+});
+
+
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/api/swagger/v1/swagger.json", "SibersApi");
+    c.RoutePrefix = "api/swagger";
 });
 
 app.UseCustomExceptionHandler();
