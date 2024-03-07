@@ -7,7 +7,7 @@ namespace WebApi.Models.Project
     public class UpdateProjectDto : IMapWith<UpdateProjectCommand>
     {
         public int Id { get; set; }
-        public int ProjectManagerId { get; set; }
+        public string ProjectManagerId { get; set; }
         public string Name { get; set; }
         public string NameCustomer { get; set; }
         public string NameContractor { get; set; }

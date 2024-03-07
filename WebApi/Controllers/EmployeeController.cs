@@ -3,6 +3,8 @@ using Business.Employees.Commands.CreateEmployee;
 using Business.Employees.Commands.DeleteEmployee;
 using Business.Employees.Queries.GetEmployeeDetails;
 using Business.Employees.Queries.GetEmployeeList;
+using Data.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Models.Employee;
 
@@ -12,7 +14,21 @@ namespace WebApi.Controllers
     public class EmployeeController : BaseController
     {
         private readonly IMapper _mapper;
+        private readonly UserManager<Employee> _userManager;
+        private readonly SignInManager<Employee> _signInManager;
         public EmployeeController(IMapper mapper) => _mapper = mapper;
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginDto model)
+        {
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe,lockoutOnFailure:false);
+            if (result.Succeeded)
+            {
+                return Ok();
+            }
+
+            return Unauthorized();
+        }
 
         [HttpGet]
         public async Task<ActionResult<EmployeeListVm>> GetAll()

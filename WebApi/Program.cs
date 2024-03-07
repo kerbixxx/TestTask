@@ -11,10 +11,14 @@ using WebApi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddBusiness();
+builder.Services.AddDatabaseContext(builder.Configuration);
+//builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile(new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));
     cfg.AddProfile(new AssemblyMappingProfile(typeof(IDataDbContext).Assembly));
+    cfg.AddProfile(new AssemblyMappingProfile(typeof(AssemblyMappingProfile).Assembly));
 });
 
 builder.Services.AddDbContext<DataDbContext>(options =>
@@ -27,8 +31,6 @@ builder.Services.AddIdentity<Employee, IdentityRole>()
     .AddEntityFrameworkStores<DataDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddBusiness();
-builder.Services.AddDatabaseContext(builder.Configuration);
 
 builder.Services.AddControllers();
 
@@ -54,8 +56,6 @@ app.UseSwagger(c =>
 {
     c.RouteTemplate = "api/swagger/{documentname}/swagger.json";
 });
-
-
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/api/swagger/v1/swagger.json", "SibersApi");
@@ -66,6 +66,7 @@ app.UseCustomExceptionHandler();
 app.UseRouting();
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
+app.UseStaticFiles();
 
 app.UseEndpoints(endpoints =>
 {

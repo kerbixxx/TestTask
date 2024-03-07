@@ -1,0 +1,21 @@
+{
+  "name": "webapi",
+  "version": "1.0.0",
+  "description": "webapi sibers",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "none"
+  },
+  "keywords": [
+    "none"
+  ],
+  "author": "kerbix",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "gulp": "^3.9.1"
+  }
+}

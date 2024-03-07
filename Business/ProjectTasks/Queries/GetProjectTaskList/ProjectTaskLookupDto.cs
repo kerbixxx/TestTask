@@ -15,7 +15,7 @@ namespace Business.ProjectTasks.Queries.GetProjectTaskList
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<ProjectTask, ProjectTaskDetailsVm>()
+            profile.CreateMap<ProjectTask, ProjectTaskLookupDto>()
                 .ForMember(ptVm => ptVm.Name,
                     opt => opt.MapFrom(projectTask => projectTask.Name))
                 .ForMember(ptVm => ptVm.Status,
