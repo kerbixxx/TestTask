@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using Business.Common.Mappings;
-using Domain.Models;
+using Data.Models;
 
 namespace Business.Employees.Queries.GetEmployeeList
 {
     public class EmployeeLookupDto : IMapWith<Employee>
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
         public string SecondName { get; set; }
         public string Patronymic {get; set; }

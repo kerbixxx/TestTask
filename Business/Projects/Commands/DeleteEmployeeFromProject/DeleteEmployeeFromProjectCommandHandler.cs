@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Business.Common.Exceptions;
-using Business.Interfaces;
-using Domain.Models;
+using Data.Interfaces;
+using Data.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

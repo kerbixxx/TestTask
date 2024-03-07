@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Business.Common.Mappings;
-using Domain.Models;
+using Data.Models;
 
 namespace Business.Projects.Queries.GetProjectDetails
 {

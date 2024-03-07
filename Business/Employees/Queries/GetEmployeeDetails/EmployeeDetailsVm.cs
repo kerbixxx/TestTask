@@ -1,18 +1,18 @@
 ﻿using AutoMapper;
-using Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Business.Common.Mappings;
+using Data.Models;
 using MediatR;
 
 namespace Business.Employees.Queries.GetEmployeeDetails
 {
     public class EmployeeDetailsVm : IMapWith<Employee>
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
         public string SecondName { get; set; }
         public string Patronymic {  get; set; }

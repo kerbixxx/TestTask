@@ -2,7 +2,7 @@
 
 namespace Business.Employees.Commands.CreateEmployee
 {
-    public class CreateEmployeeCommand : IRequest<int>
+    public class CreateEmployeeCommand : IRequest<string>
     {
         public string Name { get; set; }
         public string SecondName { get; set; }

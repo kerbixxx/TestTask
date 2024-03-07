@@ -1,5 +1,4 @@
 ﻿using Business.Common.Behaviors;
-using Domain.Enums;
 using FluentValidation;
 
 namespace Business.ProjectTasks.Commands.CreateProjectTask

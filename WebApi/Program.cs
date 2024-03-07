@@ -2,8 +2,10 @@ using System.Reflection;
 using Business;
 using Data.Context;
 using Business.Common.Mappings;
-using Business.Interfaces;
 using Data;
+using Data.Interfaces;
+using Data.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WebApi.Middleware;
 
@@ -21,14 +23,9 @@ builder.Services.AddDbContext<DataDbContext>(options =>
     options.UseSqlite(connectionString);
 });
 
-var optionsBuilder = new DbContextOptionsBuilder<DataDbContext>();
-optionsBuilder.UseSqlite("Filename=Sibers.db");
-var options = optionsBuilder.Options;
-
-using (var context = new DataDbContext(options))
-{
-    context.Database.EnsureCreated();
-}
+builder.Services.AddIdentity<Employee, IdentityRole>()
+    .AddEntityFrameworkStores<DataDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddBusiness();
 builder.Services.AddDatabaseContext(builder.Configuration);

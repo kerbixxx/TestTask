@@ -15,11 +15,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Domain\Domain.csproj" />
+    <Folder Include="ProjectTasks\Commands\UpdateProjectTaskEmployee\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ProjectTasks\Commands\UpdateProjectTaskEmployee\" />
+    <ProjectReference Include="..\Data\Data.csproj" />
   </ItemGroup>
 
 </Project>

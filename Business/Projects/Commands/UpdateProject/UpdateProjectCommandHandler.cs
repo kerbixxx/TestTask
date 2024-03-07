@@ -1,6 +1,6 @@
 ﻿using Business.Common.Exceptions;
-using Business.Interfaces;
-using Domain.Models;
+using Data.Interfaces;
+using Data.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

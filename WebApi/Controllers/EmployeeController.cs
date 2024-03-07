@@ -23,7 +23,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<EmployeeDetailsVm>> Get(int id)
+        public async Task<ActionResult<EmployeeDetailsVm>> Get(string id)
         {
             var query = new GetEmployeeDetailsQuery()
             {
@@ -37,8 +37,15 @@ namespace WebApi.Controllers
         public async Task<ActionResult<int>> Create([FromBody] CreateEmployeeDto createEmployeeDto)
         {
             var command = _mapper.Map<CreateEmployeeCommand>(createEmployeeDto);
-            var employeeId = await Mediator.Send(command);
-            return Ok(employeeId);
+            try
+            {
+                var employeeId = await Mediator.Send(command);
+                return Ok(employeeId);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut]
@@ -50,7 +57,7 @@ namespace WebApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
             var command = new DeleteEmployeeCommand
             {

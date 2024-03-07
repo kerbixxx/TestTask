@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Business.Common.Mappings;
 using Business.ProjectTasks.Queries.GetProjectTaskDetails;
-using Domain.Enums;
-using Domain.Models;
+using Data.Enums;
+using Data.Models;
 
 namespace Business.ProjectTasks.Queries.GetProjectTaskList
 {

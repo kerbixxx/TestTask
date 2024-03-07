@@ -1,6 +1,4 @@
-﻿using Domain.Models;
-
-namespace Business.ProjectTasks.Queries.GetProjectTaskList
+﻿namespace Business.ProjectTasks.Queries.GetProjectTaskList
 {
     public class ProjectTaskListVm
     {

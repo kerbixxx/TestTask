@@ -1,7 +1,7 @@
-﻿using Domain.Models;
+﻿using Data.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Business.Interfaces
+namespace Data.Interfaces
 {
     public interface IDataDbContext
     {

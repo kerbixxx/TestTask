@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Business.Common.Mappings;
-using Business.Interfaces;
 using Data.Context;
+using Data.Interfaces;
 
 namespace Tests.Common
 {

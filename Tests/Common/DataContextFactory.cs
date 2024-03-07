@@ -1,5 +1,6 @@
 ﻿using Data.Context;
-using Domain.Models;
+using Data.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Tests.Common
@@ -9,11 +10,15 @@ namespace Tests.Common
         public static int ProjectIdForDelete = 1;
         public static int ProjectIdForUpdate = 1;
 
+        public static RoleManager<IdentityRole> TODO { get; private set; }
+        public static UserManager<Employee> TODO2 { get; private set; }
+
         public static DataDbContext Create()
         {
             var options = new DbContextOptionsBuilder<DataDbContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
+
             var context = new DataDbContext(options);
             context.Database.EnsureCreated();
             var projects = GenerateData();
@@ -28,7 +33,7 @@ namespace Tests.Common
             context.Dispose();
         }
 
-        public static List<Domain.Models.Project> GenerateData()
+        public static List<Data.Models.Project> GenerateData()
         {
             // Создание объектов класса Employee
             var employee1 = new Employee
@@ -48,7 +53,7 @@ namespace Tests.Common
             };
 
             // Создание объектов класса Project
-            var project1 = new Domain.Models.Project
+            var project1 = new Data.Models.Project
             {
                 Name = "Проект 1",
                 NameCustomer = "Компания А",
@@ -56,12 +61,12 @@ namespace Tests.Common
                 DateBeginning = new DateTime(2024, 4, 1),
                 DateEnd = new DateTime(2024, 6, 30),
                 Priority = 1,
-                ProjectManagerId = 1,
+                ProjectManagerId = "hh",
                 ProjectManager = employee1,
                 Employees = new List<Employee> { employee1, employee2 }
             };
 
-            var project2 = new Domain.Models.Project
+            var project2 = new Data.Models.Project
             {
                 Name = "Проект 2",
                 NameCustomer = "Компания В",
@@ -69,7 +74,7 @@ namespace Tests.Common
                 DateBeginning = new DateTime(2024, 7, 1),
                 DateEnd = new DateTime(2024, 9, 30),
                 Priority = 2,
-                ProjectManagerId = 2,
+                ProjectManagerId = "hh",
                 ProjectManager = employee2,
                 Employees = new List<Employee> { employee1, employee2 }
             };

@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Domain.Enums;
+﻿using Data.Enums;
 
-namespace Domain.Models
+namespace Data.Models
 {
     public class ProjectTask : Entity
     {
         public int ProjectId { get; set; }
         public string Name { get; set; }
-        public int AuthorId { get; set; }
+        public string AuthorId { get; set; }
         public Employee? Author { get; set; }
-        public int? ExecutorId { get; set; }
+        public string? ExecutorId { get; set; }
         public Employee? Executor { get; set; }
         public Status Status { get; set; }
         public string Description { get; set; }

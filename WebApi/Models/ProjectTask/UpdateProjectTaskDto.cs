@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Business.ProjectTasks.Commands.CreateProjectTask;
 using Business.ProjectTasks.Commands.UpdateProjectTask;
-using Domain.Enums;
+using Data.Enums;
 
 namespace WebApi.Models.ProjectTask
 {

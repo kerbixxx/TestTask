@@ -26,7 +26,7 @@ namespace Tests.Project.Commands
                     DateBeginning = dateBeginning,
                     DateEnd = dateEnd,
                     Priority = priority,
-                    ProjectManagerId = 1
+                    ProjectManagerId = "hh"
                 },CancellationToken.None);
 
             Assert.NotNull(await Context.Projects.SingleOrDefaultAsync(project => project.Id == projectId &&

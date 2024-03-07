@@ -1,4 +1,4 @@
-﻿using Domain.Enums;
+﻿using Data.Enums;
 using MediatR;
 
 namespace Business.ProjectTasks.Commands.UpdateProjectTask

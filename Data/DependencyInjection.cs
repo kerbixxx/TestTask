@@ -1,5 +1,5 @@
-﻿using Business.Interfaces;
-using Data.Context;
+﻿using Data.Context;
+using Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;

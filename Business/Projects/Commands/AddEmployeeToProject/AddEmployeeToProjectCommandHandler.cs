@@ -1,12 +1,12 @@
-﻿using Business.Interfaces;
-using MediatR;
+﻿using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Business.Common.Exceptions;
-using Domain.Models;
+using Data.Interfaces;
+using Data.Models;
 
 namespace Business.Projects.Commands.AddEmployeeToProject
 {

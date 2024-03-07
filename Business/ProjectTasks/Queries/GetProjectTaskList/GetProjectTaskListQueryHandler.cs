@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Business.Interfaces;
-using Domain.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Data.Interfaces;
+using Data.Models;
 
 namespace Business.ProjectTasks.Queries.GetProjectTaskList
 {
@@ -25,13 +25,13 @@ namespace Business.ProjectTasks.Queries.GetProjectTaskList
             var query = _dbContext.ProjectTasks.AsQueryable();
 
             // Фильтрация
-            if (request.AuthorId.HasValue)
+            if (request.AuthorId!=null)
             {
-                query = query.Where(t => t.AuthorId == request.AuthorId.Value);
+                query = query.Where(t => t.AuthorId == request.AuthorId);
             }
-            if (request.ExecutorId.HasValue)
+            if (request.ExecutorId!=null)
             {
-                query = query.Where(t => t.ExecutorId == request.ExecutorId.Value);
+                query = query.Where(t => t.ExecutorId == request.ExecutorId);
             }
             if (request.Status.HasValue)
             {

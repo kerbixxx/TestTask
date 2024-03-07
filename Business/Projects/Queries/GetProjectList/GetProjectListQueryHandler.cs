@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Business.Interfaces;
-using Domain.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Data.Interfaces;
+using Data.Models;
 
 namespace Business.Projects.Queries.GetProjectList
 {

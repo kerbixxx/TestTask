@@ -4,7 +4,7 @@ using Business.ProjectTasks.Commands.DeleteProjectTask;
 using Business.ProjectTasks.Commands.ReassignProjectTask;
 using Business.ProjectTasks.Queries.GetProjectTaskDetails;
 using Business.ProjectTasks.Queries.GetProjectTaskList;
-using Domain.Enums;
+using Data.Enums;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Models.ProjectTask;
 
@@ -18,8 +18,8 @@ namespace WebApi.Controllers
 
         [HttpGet]
         public async Task<ActionResult<ProjectTaskListVm>> GetAll(
-            [FromQuery] int? authorId,
-            [FromQuery] int? executorId,
+            [FromQuery] string? authorId,
+            [FromQuery] string? executorId,
             [FromQuery] Status? status,
             [FromQuery] int? priority,
             [FromQuery] string? sortBy,
