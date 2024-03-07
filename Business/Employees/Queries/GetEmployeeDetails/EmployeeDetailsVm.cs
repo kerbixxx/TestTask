@@ -5,10 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Business.Common.Mappings;
+using MediatR;
 
 namespace Business.Employees.Queries.GetEmployeeDetails
 {
-    public class EmployeeDetailsVm
+    public class EmployeeDetailsVm : IMapWith<Employee>
     {
         public int Id { get; set; }
         public string Name { get; set; }

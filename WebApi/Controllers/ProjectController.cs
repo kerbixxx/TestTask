@@ -73,7 +73,7 @@ namespace WebApi.Controllers
             return NoContent();
         }
 
-        [HttpPost("{projectId}/employees/{employeeId}")]
+        [HttpPost("manageEmployee")]
         public async Task<IActionResult> AddEmployeeToProject(
             [FromBody] ManageEmployeeInProjectDto addEmployeeToProjectDto)
         {
@@ -86,7 +86,7 @@ namespace WebApi.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{projectId}/employees/{employeeId}")]
+        [HttpDelete("manageEmployee")]
         public async Task<IActionResult> RemoveEmployeeFromProject(
             [FromBody] ManageEmployeeInProjectDto removeEmployeeFromProjectDto)
         {

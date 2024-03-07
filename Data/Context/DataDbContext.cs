@@ -9,11 +9,12 @@ namespace Data.Context
     {
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Project> Projects { get; set; }
+        public DbSet<ProjectTask> ProjectTasks { get; set; }
         public DataDbContext(DbContextOptions<DataDbContext> options) : base(options)
         {
             Database.EnsureCreated();
         }
-
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite("Filename = Sibers.db");
