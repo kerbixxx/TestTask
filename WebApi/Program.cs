@@ -13,7 +13,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddBusiness();
 builder.Services.AddDatabaseContext(builder.Configuration);
-//builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile(new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));
@@ -31,6 +30,15 @@ builder.Services.AddIdentity<Employee, IdentityRole>()
     .AddEntityFrameworkStores<DataDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    // Параметры пароля
+    options.Password.RequireDigit = false; // Не требует цифры
+    options.Password.RequiredLength = 4; // Минимальная длина 4 символа
+    options.Password.RequireNonAlphanumeric = false; // Не требует не-алфавитно-цифровый символ
+    options.Password.RequireUppercase = false; // Не требует символ верхнего регистра
+    options.Password.RequireLowercase = false; // Не требует символ нижнего регистра
+});
 
 builder.Services.AddControllers();
 
@@ -44,7 +52,6 @@ builder.Services.AddCors(options =>
     });
 });
 builder.Services.AddSwaggerGen();
-
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

@@ -16,6 +16,7 @@ namespace Business.Projects.Queries.GetProjectDetails
         public async Task<ProjectDetailsVm> Handle(GetProjectDetailsQuery request, CancellationToken cancellationToken)
         {
             var entity = await _dbContext.Projects
+                .Include(p=>p.Employees)
                 .FirstOrDefaultAsync(project => project.Id == request.Id,cancellationToken);
 
             if (entity == null)

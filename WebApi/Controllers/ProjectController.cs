@@ -73,27 +73,27 @@ namespace WebApi.Controllers
             return NoContent();
         }
 
-        [HttpPost("manageEmployee")]
+        [HttpPost("{projectId}/addEmployee/{employeeId}")]
         public async Task<IActionResult> AddEmployeeToProject(
-            [FromBody] ManageEmployeeInProjectDto addEmployeeToProjectDto)
+            int projectId, string employeeId)
         {
             var command = new AddEmployeeToProjectCommand
             {
-                ProjectId = addEmployeeToProjectDto.ProjectId,
-                EmployeeId = addEmployeeToProjectDto.EmployeeId
+                ProjectId = projectId,
+                EmployeeId = employeeId
             };
             await Mediator.Send(command);
             return NoContent();
         }
 
-        [HttpDelete("manageEmployee")]
+        [HttpDelete("{projectId}/removeEmployee/{employeeId}")]
         public async Task<IActionResult> RemoveEmployeeFromProject(
-            [FromBody] ManageEmployeeInProjectDto removeEmployeeFromProjectDto)
+            int projectId, string employeeId)
         {
             var command = new DeleteEmployeeFromProjectCommand
             {
-                ProjectId = removeEmployeeFromProjectDto.ProjectId,
-                EmployeeId = removeEmployeeFromProjectDto.EmployeeId
+                ProjectId = projectId,
+                EmployeeId = employeeId
             };
             await Mediator.Send(command);
             return NoContent();

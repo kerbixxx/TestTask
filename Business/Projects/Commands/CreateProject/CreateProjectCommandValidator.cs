@@ -9,8 +9,7 @@ namespace Business.Projects.Commands.CreateProject
         {
             RuleFor(createProjectCommand =>
                     createProjectCommand.Name).NotEmpty().WithMessage("Имя не должно быть пустым")
-                .MaximumLength(250).WithMessage("Максимальная длина имени 250 символов")
-                .Must(name => IsNameValid(name)).WithMessage("Имя должно содержать только буквы и пробелы");
+                .MaximumLength(250).WithMessage("Максимальная длина имени 250 символов");
             RuleFor(createProjectCommand =>
                 createProjectCommand.ProjectManagerId).NotNull();
             RuleFor(createProjectCommand =>

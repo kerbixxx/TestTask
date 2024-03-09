@@ -54,7 +54,9 @@ namespace Business.Projects.Queries.GetProjectList
                 }
             }
 
-            var projectsQuery = await query.ProjectTo<ProjectLookupDto>(_mapper.ConfigurationProvider)
+            var projectsQuery = await query
+                .Include(p=>p.Employees)
+                .ProjectTo<ProjectLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
             return new ProjectListVm { Projects = projectsQuery };

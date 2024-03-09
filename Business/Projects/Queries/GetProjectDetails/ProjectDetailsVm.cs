@@ -11,6 +11,7 @@ namespace Business.Projects.Queries.GetProjectDetails
         public string NameContractor { get; set; }
         public DateTime DateBeginning { get; set; }
         public DateTime DateEnd { get; set; }
+        public List<EmployeeInProj> Employees { get; set; }
         public int Priority { get; set; }
 
         public void Mapping(Profile profile)
@@ -27,7 +28,9 @@ namespace Business.Projects.Queries.GetProjectDetails
                 .ForMember(projectVm => projectVm.DateEnd,
                     opt => opt.MapFrom(project => project.DateEnd))
                 .ForMember(projectVm => projectVm.Priority,
-                    opt => opt.MapFrom(project => project.Priority));
+                    opt => opt.MapFrom(project => project.Priority))
+                .ForMember(projectVm=>projectVm.Employees,
+                    opt=>opt.MapFrom(project=>project.Employees));
         }
     }
 }

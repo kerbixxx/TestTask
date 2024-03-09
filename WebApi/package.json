@@ -16,6 +16,10 @@
   "author": "kerbix",
   "license": "UNLICENSED",
   "devDependencies": {
-    "gulp": "^3.9.1"
+    "gulp": "^4.0.2"
+  },
+  "dependencies": {
+    "axios": "^1.6.7",
+    "vue": "^3.4.21"
   }
 }

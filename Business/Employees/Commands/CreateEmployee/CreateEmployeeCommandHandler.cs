@@ -23,7 +23,7 @@ namespace Business.Employees.Commands.CreateEmployee
                 SecondName = request.SecondName,
                 Patronymic = request.Patronymic,
             };
-            var password = GenerateRandomPassword();
+            var password = "pass";
             var result = await _userManager.CreateAsync(employee, password);
             if (result.Succeeded)
             {

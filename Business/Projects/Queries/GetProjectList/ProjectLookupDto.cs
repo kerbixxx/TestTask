@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Business.Common.Mappings;
+using Business.Projects.Queries.GetProjectDetails;
 using Data.Models;
 
 namespace Business.Projects.Queries.GetProjectList
@@ -12,6 +13,7 @@ namespace Business.Projects.Queries.GetProjectList
         public string NameContractor { get; set; }
         public DateTime DateBeginning { get; set; }
         public DateTime DateEnd { get; set; }
+        public List<EmployeeInProj> Employees { get; set; }
         public int Priority { get; set; }
 
         public void Mapping(Profile profile)
@@ -30,7 +32,9 @@ namespace Business.Projects.Queries.GetProjectList
                 .ForMember(projectDto => projectDto.DateEnd,
                     opt => opt.MapFrom(project => project.DateEnd))
                 .ForMember(projectDto => projectDto.Priority,
-                    opt => opt.MapFrom(project => project.Priority));
+                    opt => opt.MapFrom(project => project.Priority))
+                .ForMember(projectVm => projectVm.Employees,
+                    opt => opt.MapFrom(project => project.Employees));
         }
     }
 }
