@@ -1,0 +1,91 @@
+﻿@page "/project/edit/{Id}"
+@using Front.Models.Project
+@using Business.Projects.Queries.GetProjectDetails
+@using Business.Employees.Queries.GetEmployeeList
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+<h3>Редактирование проекта</h3>
+
+<EditForm Model="command" OnValidSubmit="SubmitForm">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <div class="form-group">
+        <label for="name">Название проекта</label>
+        <InputText id="name" @bind-Value="command.Name" class="form-control"/>
+    </div>
+    <div class="form-group">
+        <label for="nameCustomer">Компания-заказчик</label>
+        <InputText id="nameCustomer" @bind-Value="command.NameCustomer" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="nameContractor">Компания-исполнитель</label>
+        <InputText id="nameContractor" @bind-Value="command.NameContractor" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="managerId">Менеджер проекта</label>
+        <InputSelect id="managerId" @bind-Value="command.ProjectManagerId">
+            <option value="">Выберите менеджера</option>
+            @if (EmployeeList.Employees != null)
+                @foreach (var employee in EmployeeList.Employees)
+            {
+                <option value="@employee.Id">@employee.Name @employee.SecondName</option>
+            }
+        </InputSelect>
+    </div>
+    <div class="form-group">
+        <label for="priority">Приоритет</label>
+        <InputNumber id="priority" @bind-Value="command.Priority"/>
+    </div>
+    <div class="form-group">
+        <label for="dateBeginning">Приоритет</label>
+        <InputDate id="dateBeginning" @bind-Value="command.DateBeginning" />
+    </div>
+    <div class="form-group">
+        <label for="dateEnd">Приоритет</label>
+        <InputDate id="dateEnd" @bind-Value="command.DateEnd" />
+    </div>
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    <a href="/projects" class="mb-4">
+        <div class="col-sm-6">
+            <button type="button" class="btn btn-primary">Назад</button>
+        </div>
+    </a>
+</EditForm>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    string errorMessage { get; set; }
+    UpdateProjectDto command { get; set; } = new();
+    EmployeeListVm EmployeeList { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        int id = int.Parse(Id);
+        var project = await HttpClient.GetFromJsonAsync<ProjectDetailsVm>($"project/{id}");
+        EmployeeList = await HttpClient.GetFromJsonAsync<EmployeeListVm>("employee");
+        command = new UpdateProjectDto
+        {
+            Id=project.Id,
+            DateBeginning = project.DateBeginning,
+            DateEnd = project.DateEnd,
+            Name=project.Name,
+            NameContractor = project.NameContractor,
+            NameCustomer = project.NameCustomer,
+            Priority = project.Priority,
+            ProjectManagerId = project.ProjectManagerId
+        };
+    }
+    private async void SubmitForm()
+    {
+        var result = await HttpClient.PutAsJsonAsync("project", command);
+        if (result.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo("/projects");
+        }
+        else
+        {
+            errorMessage = result.ReasonPhrase;
+        }
+    }
+}

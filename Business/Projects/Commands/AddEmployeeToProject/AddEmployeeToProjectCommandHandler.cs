@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Business.Common.Exceptions;
 using Data.Interfaces;
 using Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Business.Projects.Commands.AddEmployeeToProject
 {
@@ -28,7 +29,8 @@ namespace Business.Projects.Commands.AddEmployeeToProject
             {
                 throw new NotFoundException(nameof(Project), request.ProjectId);
             }
-            project.Employees.Add(employee);
+
+            _dbContext.ProjectEmployees.Add(new ProjectEmployee(){EmployeeId = request.EmployeeId,ProjectId = request.ProjectId});
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
     }

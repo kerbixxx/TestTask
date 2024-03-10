@@ -1,0 +1,55 @@
+﻿@page "/projects"
+@using Business.Projects.Queries.GetProjectList
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+
+<a href="/project/create" class="row mb-4">
+    <div class="col-sm-6">
+        <button type="button" class="btn btn-primary">Добавить проект</button>
+    </div>
+</a>
+<h3>Список проектов</h3>
+
+@if (ProjectsList.Projects == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    foreach (var project in ProjectsList.Projects)
+    {
+        <p>@project.Name
+            <button class="btn btn-warning" @onclick="() => EditProject(project.Id)">Редактировать</button>
+            <button class="btn btn-danger" @onclick="async () => await DeleteProject(project.Id)">Удалить</button>
+            <button class="btn btn-primary" @onclick="() => ManageProject(project.Id)">Управление проектом</button>
+        </p>
+    }
+}
+
+@code {
+    ProjectListVm ProjectsList = new();
+    protected override async Task OnInitializedAsync()
+    {
+        ProjectsList = await HttpClient.GetFromJsonAsync<ProjectListVm>("project");
+    }
+
+    private void EditProject(int id)
+    {
+        NavigationManager.NavigateTo($"/project/edit/{id}");
+    }
+
+    private async Task DeleteProject(int id)
+    {
+        var response = await HttpClient.DeleteAsync($"project/{id}");
+        if (response.IsSuccessStatusCode)
+        {
+            ProjectsList = await HttpClient.GetFromJsonAsync<ProjectListVm>("project");
+            StateHasChanged();
+        }
+    }
+
+    private void ManageProject(int id)
+    {
+        NavigationManager.NavigateTo($"project/manage/{id}");
+    }
+}

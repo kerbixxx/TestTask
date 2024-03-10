@@ -18,23 +18,29 @@ namespace Business.Projects.Commands.DeleteEmployeeFromProject
 
         public async Task Handle(DeleteEmployeeFromProjectCommand request,CancellationToken cancellationToken)
         {
-            var employee = await _dbContext.Employees.Include(e => e.Projects).FirstOrDefaultAsync(e => e.Id == request.EmployeeId, cancellationToken);
-            if (employee == null)
+            // Проверка наличия проекта и сотрудника
+            var project = await _dbContext.Projects.FindAsync(request.ProjectId);
+            var employee = await _dbContext.Employees.FindAsync(request.EmployeeId);
+
+            if (project == null || employee == null)
             {
-                throw new NotFoundException(nameof(Employee), request.EmployeeId);
+                throw new NotFoundException(nameof(Project), request.ProjectId)
+                      ?? new NotFoundException(nameof(Employee), request.EmployeeId);
             }
 
-            var project = await _dbContext.Projects.Include(p => p.Employees).FirstOrDefaultAsync(p => p.Id == request.ProjectId, cancellationToken);
-            if (project == null)
+            // Удаление связи через промежуточную таблицу
+            var projectEmployee = await _dbContext.ProjectEmployees
+                .FirstOrDefaultAsync(pe => pe.ProjectId == request.ProjectId && pe.EmployeeId == request.EmployeeId, cancellationToken);
+
+            if (projectEmployee != null)
             {
-                throw new NotFoundException(nameof(Project), request.ProjectId);
+                _dbContext.ProjectEmployees.Remove(projectEmployee);
+                await _dbContext.SaveChangesAsync(cancellationToken);
             }
-
-            // Удаление ссылок на сотрудника из проекта и на проект у сотрудника
-            project.Employees.Remove(employee);
-            employee.Projects.Remove(project);
-
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            else
+            {
+                throw new NotFoundException(nameof(Employee),request.EmployeeId);
+            }
         }
     }
 }

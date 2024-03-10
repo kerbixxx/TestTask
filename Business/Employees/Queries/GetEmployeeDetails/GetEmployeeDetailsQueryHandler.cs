@@ -25,7 +25,8 @@ namespace Business.Employees.Queries.GetEmployeeDetails
 
         public async Task<EmployeeDetailsVm> Handle(GetEmployeeDetailsQuery request,CancellationToken cancellationToken)
         {
-            var entity = await _dbContext.Employees.FirstOrDefaultAsync(employee=>employee.Id==request.Id, cancellationToken);
+            var entity = await _dbContext.Employees.Include(p => p.Projects)
+                .FirstOrDefaultAsync(employee => employee.Id == request.Id, cancellationToken);
             if (entity == null)
             {
                 throw new NotFoundException(nameof(Employee),request.Id);

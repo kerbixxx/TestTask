@@ -6,7 +6,9 @@ namespace Business.Projects.Queries.GetProjectDetails
 {
     public class ProjectDetailsVm : IMapWith<Project>
     {
+        public int Id { get; set; }
         public string Name { get; set; }
+        public string ProjectManagerId { get; set; }
         public string NameCustomer { get; set; }
         public string NameContractor { get; set; }
         public DateTime DateBeginning { get; set; }
@@ -17,8 +19,12 @@ namespace Business.Projects.Queries.GetProjectDetails
         public void Mapping(Profile profile)
         {
             profile.CreateMap<Project, ProjectDetailsVm>()
+                .ForMember(projectVm => projectVm.Id,
+                    opt => opt.MapFrom(project => project.Id))
                 .ForMember(projectVm => projectVm.Name,
                     opt => opt.MapFrom(project => project.Name))
+                .ForMember(projectVm => projectVm.ProjectManagerId,
+                    opt => opt.MapFrom(project => project.ProjectManagerId))
                 .ForMember(projectVm => projectVm.NameCustomer,
                     opt => opt.MapFrom(project => project.NameCustomer))
                 .ForMember(projectVm => projectVm.NameContractor,

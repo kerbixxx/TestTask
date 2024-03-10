@@ -1,0 +1,62 @@
+﻿@page "/employee/edit/{Id}"
+@using Front.Models.Employee
+@using Business.Employees.Queries.GetEmployeeDetails
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+<h3>Редактирование сотрудника</h3>
+
+<EditForm Model="command" OnValidSubmit="SubmitForm">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <div class="form-group">
+        <label for="name">Имя</label>
+        <InputText id="name" @bind-Value="command.Name" class="form-control"/>
+    </div>
+    <div class="form-group">
+        <label for="secondName">Фамилия</label>
+        <InputText id="secondName" @bind-Value="command.SecondName" class="form-control"/>
+    </div>
+    <div class="form-group">
+        <label for="patronymic">Отчество</label>
+        <InputText id="patronymic" @bind-Value="command.Patronymic" class="form-control"/>
+    </div>
+    <div class="form-group">
+        <label for="email">Почта</label>
+        <InputText id="email" @bind-Value="command.Email" class="form-control"/>
+    </div>
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    <a href="/employees" class="mb-4">
+        <div class="col-sm-6">
+            <button type="button" class="btn btn-primary">Назад</button>
+        </div>
+    </a>
+</EditForm>
+@errorMessage
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    string errorMessage { get; set; }
+    UpdateEmployeeDto command { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var employee = await HttpClient.GetFromJsonAsync<EmployeeDetailsVm>($"employee/{Id}");
+        command = new UpdateEmployeeDto
+        {
+            Email = employee.Email, Id = employee.Id, Name = employee.Name, Patronymic = employee.Patronymic, SecondName = employee.SecondName
+        };
+    }
+
+    private async void SubmitForm()
+    {
+        var result = await HttpClient.PutAsJsonAsync("employee", command);
+        if (result.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo("/employees");
+        }
+        else
+        {
+            errorMessage = result.ReasonPhrase;
+        }
+    }
+}

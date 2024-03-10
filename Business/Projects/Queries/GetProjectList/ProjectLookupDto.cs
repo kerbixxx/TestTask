@@ -8,6 +8,8 @@ namespace Business.Projects.Queries.GetProjectList
     public class ProjectLookupDto : IMapWith<Project>
     {
         public int Id { get; set; }
+        public string ProjectManagerId { get; set; }
+        public Employee ProjectManager { get; set; }
         public string Name { get; set; }
         public string NameCustomer { get; set; }
         public string NameContractor { get; set; }
@@ -21,6 +23,10 @@ namespace Business.Projects.Queries.GetProjectList
             profile.CreateMap<Project, ProjectLookupDto>()
                 .ForMember(projectDto => projectDto.Id,
                     opt => opt.MapFrom(project => project.Id))
+                .ForMember(projectDto => projectDto.ProjectManagerId,
+                    opt => opt.MapFrom(project => project.ProjectManagerId))
+                .ForMember(projectDto => projectDto.ProjectManager,
+                    opt => opt.MapFrom(project => project.ProjectManager))
                 .ForMember(projectDto => projectDto.Name,
                     opt => opt.MapFrom(project => project.Name))
                 .ForMember(projectDto => projectDto.NameCustomer,

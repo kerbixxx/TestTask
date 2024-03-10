@@ -31,7 +31,6 @@ namespace Business.Projects.Commands.CreateProject
             }
             try
             {
-                project.Employees.Add(employee);
                 await _dbContext.Projects.AddAsync(project, cancellationToken);
                 await _dbContext.SaveChangesAsync(cancellationToken);
             }

@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Business.Projects.Queries.GetProjectDetails;
 using Data.Interfaces;
 using Data.Models;
 
@@ -55,10 +56,9 @@ namespace Business.Projects.Queries.GetProjectList
             }
 
             var projectsQuery = await query
-                .Include(p=>p.Employees)
+                .Include(p=>p.ProjectManager)
                 .ProjectTo<ProjectLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
-
             return new ProjectListVm { Projects = projectsQuery };
         }
     }

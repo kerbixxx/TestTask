@@ -1,0 +1,52 @@
+﻿@page "/employees"
+@using Business.Employees.Queries.GetEmployeeList
+@using System.Net
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+<a href="/employee/create" class="row mb-4">
+    <div class="col-sm-6">
+        <button type="button" class="btn btn-primary">Добавить сотрудника</button>
+    </div>
+</a>
+
+<h3>Список сотрудников</h3>
+
+@if (EmployeesList.Employees == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    foreach (var employee in EmployeesList.Employees)
+    {
+        <p>
+            @employee.Name @employee.SecondName @employee.Patronymic
+            <button class="btn btn-warning" @onclick="() => EditEmployee(employee.Id)">Редактировать</button>
+            <button class="btn btn-danger" @onclick="async () => await DeleteEmployee(employee.Id)">Удалить</button>
+        </p> 
+    }
+}
+
+@code {
+    EmployeeListVm EmployeesList = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        EmployeesList = await HttpClient.GetFromJsonAsync<EmployeeListVm>("employee");
+    }
+
+    private void EditEmployee(string id)
+    {
+        NavigationManager.NavigateTo($"/employee/edit/{id}");
+    }
+
+    private async Task DeleteEmployee(string id)
+    {
+        var response = await HttpClient.DeleteAsync($"employee/{id}");
+        if (response.IsSuccessStatusCode)
+        {
+            EmployeesList = await HttpClient.GetFromJsonAsync<EmployeeListVm>("employee");
+            StateHasChanged();
+        }
+    }
+}

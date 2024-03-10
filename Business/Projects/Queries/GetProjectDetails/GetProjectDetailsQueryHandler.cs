@@ -17,6 +17,8 @@ namespace Business.Projects.Queries.GetProjectDetails
         {
             var entity = await _dbContext.Projects
                 .Include(p=>p.Employees)
+                    .ThenInclude(pe=>pe.Employee)
+                .Include(p=>p.ProjectManager)
                 .FirstOrDefaultAsync(project => project.Id == request.Id,cancellationToken);
 
             if (entity == null)

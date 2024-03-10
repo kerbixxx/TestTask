@@ -1,0 +1,79 @@
+﻿@page "/project/manage/{Id}"
+@using Business.Projects.Queries.GetProjectDetails
+@using Business.Employees.Queries.GetEmployeeList
+@inject HttpClient HttpClient
+<h2>Управление сотрудниками проекта</h2>
+<div>
+    <h3>Проект: @project.Name</h3>
+    @if (project.Employees != null)
+    {
+        @foreach (var employee in project.Employees)
+        {
+            <p>
+                @employee.Name @employee.SecondName @employee.Patronymic
+                <button type="button" @onclick="async () => await DeleteEmployeeFromProject(employee.Id)">Удалить из проекта</button>
+            </p>
+        }
+    }
+    else
+    {
+        <p>Сотрудники не назначены на проект</p>
+    }
+
+</div>
+<div>
+    <div class="form-group">
+        <label for="employee">Сотрудник</label>
+        <select id="employee" @bind="selectedEmployeeId">
+            <option value="">Выберите сотрудника</option>
+            @if(employees.Employees!=null)
+                @foreach (var employee in employees.Employees)
+                {
+                    <option value="@employee.Id">@employee.Name @employee.SecondName</option>
+                }
+        </select>
+    </div>
+    <button type="button" class="btn btn-primary" @onclick="async ()=>AddEmployeeToProject(selectedEmployeeId)">Добавить</button>
+</div>
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    ProjectDetailsVm project { get; set; } = new();
+    EmployeeListVm employees { get; set; } = new();
+    string selectedEmployeeId { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        int id = int.Parse(Id);
+        project = await HttpClient.GetFromJsonAsync<ProjectDetailsVm>($"project/{id}");
+        employees = await HttpClient.GetFromJsonAsync<EmployeeListVm>("employee");
+    }
+
+    private async Task DeleteEmployeeFromProject(string id)
+    {
+        var response = await HttpClient.DeleteAsync($"project/{project.Id}/removeEmployee/{id}");
+        if (response.IsSuccessStatusCode)
+        {
+            project = await HttpClient.GetFromJsonAsync<ProjectDetailsVm>($"project/{project.Id}");
+            StateHasChanged();
+        }
+    }
+    private async Task AddEmployeeToProject(string id)
+    {
+        if (!string.IsNullOrEmpty(selectedEmployeeId))
+        {
+            var response = await HttpClient.PostAsync($"project/{project.Id}/addEmployee/{selectedEmployeeId}", null);
+            if (response.IsSuccessStatusCode)
+            {
+                // Обновление списка сотрудников проекта после успешного добавления
+                project = await HttpClient.GetFromJsonAsync<ProjectDetailsVm>($"project/{project.Id}");
+                selectedEmployeeId = null; // Обнуление выбора в выпадающем списке
+                StateHasChanged();
+            }
+            else
+            {
+                // Обработка ошибки, например, отображение сообщения об ошибке
+                Console.WriteLine($"Ошибка при добавлении сотрудника в проект: {response.ReasonPhrase}");
+            }
+        }
+    }
+}
