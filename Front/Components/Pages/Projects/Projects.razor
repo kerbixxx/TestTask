@@ -1,5 +1,7 @@
 ﻿@page "/projects"
 @using Business.Projects.Queries.GetProjectList
+@using Microsoft.AspNetCore.WebUtilities
+@using Business.Common.Extensions
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 
@@ -8,6 +10,38 @@
         <button type="button" class="btn btn-primary">Добавить проект</button>
     </div>
 </a>
+<form @onsubmit="FilterProjects">
+    <div class="form-group">
+        <label for="startDate">Дата начала:</label>
+        <input type="date" id="startDate" @bind="startDate" />
+    </div>
+    <div class="form-group">
+        <label for="endDate">Дата окончания:</label>
+        <input type="date" id="endDate" @bind="endDate" />
+    </div>
+    <div class="form-group">
+        <label for="priority">Приоритет:</label>
+        <input type="number" id="priority" @bind="priority" />
+    </div>
+    <div class="form-group">
+        <label for="sortBy">Сортировать по:</label>
+        <select id="sortBy" @bind="sortBy">
+            <option value="dateBeginning">Дата начала</option>
+            <option value="dateEnd">Дата финиша</option>
+            <option value="priority">Приоритет</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="sortOrder">Порядок сортировки:</label>
+        <select id="sortOrder" @bind="sortOrder">
+            <option value="asc">По возрастанию</option>
+            <option value="desc">По убыванию</option>
+        </select>
+    </div>
+    <button type="submit">Фильтровать</button>
+</form>
+
+
 <h3>Список проектов</h3>
 
 @if (ProjectsList.Projects == null)
@@ -28,9 +62,28 @@ else
 
 @code {
     ProjectListVm ProjectsList = new();
+    DateTime? startDate;
+    DateTime? endDate;
+    int? priority;
+    string? sortBy;
+    string? sortOrder;
     protected override async Task OnInitializedAsync()
     {
-        ProjectsList = await HttpClient.GetFromJsonAsync<ProjectListVm>("project");
+        await FilterProjects();
+    }
+
+    private async Task FilterProjects()
+    {
+        var queryString = new Dictionary<string, string>
+        {
+            { "startDate", startDate?.ToString("yyyy-MM-dd") },
+            { "endDate", endDate?.ToString("yyyy-MM-dd") },
+            { "priority", priority?.ToString() },
+            { "sortBy", sortBy },
+            { "sortOrder", sortOrder }
+        }.Where(kvp => kvp.Value != null).ToQueryString();
+
+        ProjectsList = await HttpClient.GetFromJsonAsync<ProjectListVm>($"project?{queryString}");
     }
 
     private void EditProject(int id)
