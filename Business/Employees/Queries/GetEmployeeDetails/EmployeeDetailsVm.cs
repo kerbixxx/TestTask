@@ -33,7 +33,8 @@ namespace Business.Employees.Queries.GetEmployeeDetails
                 .ForMember(employeeVm => employeeVm.Email,
                     opt => opt.MapFrom(employee => employee.Email));
 
-            profile.CreateMap<Project, ProjectDto>();
+            profile.CreateMap<ProjectEmployee, ProjectDto>()
+                .ForMember(projectDto => projectDto.Name, opt => opt.MapFrom(projectEmployee => projectEmployee.Project.Name));
         }
     }
 }

@@ -2,6 +2,7 @@
 using Data.Interfaces;
 using Data.Models;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Business.Employees.Commands.UpdateEmployee
@@ -9,7 +10,8 @@ namespace Business.Employees.Commands.UpdateEmployee
     public class UpdateEmployeeCommandHandler : IRequestHandler<UpdateEmployeeCommand>
     {
         private readonly IDataDbContext _dbContext;
-        public UpdateEmployeeCommandHandler(IDataDbContext dbContext) => _dbContext = dbContext;
+        private readonly UserManager<Employee> _userManager;
+        public UpdateEmployeeCommandHandler(IDataDbContext dbContext, UserManager<Employee> userManager) => (_dbContext,_userManager) = (dbContext,userManager);
 
         public async Task Handle(UpdateEmployeeCommand request, CancellationToken cancellationToken)
         {
@@ -22,7 +24,15 @@ namespace Business.Employees.Commands.UpdateEmployee
                 throw new NotFoundException(nameof(Employee), request.Id);
             }
 
-            entity.Email = request.Email;
+            if (entity.Email != request.Email)
+            {
+                await _userManager.SetEmailAsync(entity, request.Email);
+                var emailConfirmationToken = await _userManager.GenerateChangeEmailTokenAsync(entity,request.Email);
+                await _userManager.ConfirmEmailAsync(entity, emailConfirmationToken);
+                entity.UserName = request.Email;
+                entity.NormalizedEmail = request.Email.Normalize();
+                entity.NormalizedUserName = request.Email.Normalize();
+            }
             entity.Name = request.Name;
             entity.SecondName = request.SecondName;
             entity.Patronymic = request.Patronymic;

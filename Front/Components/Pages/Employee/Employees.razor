@@ -17,14 +17,30 @@
 }
 else
 {
-    foreach (var employee in EmployeesList.Employees)
-    {
-        <p>
-            @employee.Name @employee.SecondName @employee.Patronymic
-            <button class="btn btn-warning" @onclick="() => EditEmployee(employee.Id)">Редактировать</button>
-            <button class="btn btn-danger" @onclick="async () => await DeleteEmployee(employee.Id)">Удалить</button>
-        </p> 
-    }
+    <table class="table table-bordered table-striped" style="width:100%">
+        <thead>
+        <tr>
+            <th>Фамилия</th>
+            <th>Имя</th>
+            <th>Отчество</th>
+            <th>Кнопки управления</th>
+        </tr>
+        </thead>
+        <tbody>
+            @foreach (var employee in EmployeesList.Employees)
+            {
+                <tr>
+                    <td>@employee.SecondName</td>
+                    <td>@employee.Name</td>
+                    <td>@employee.Patronymic</td>
+                    <td>
+                        <button class="btn btn-warning" @onclick="() => EditEmployee(employee.Id)">Редактировать</button>
+                        <button class="btn btn-danger" @onclick="async () => await DeleteEmployee(employee.Id)">Удалить</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
 
 @code {

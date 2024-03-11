@@ -2,6 +2,7 @@
 @using Business.Projects.Queries.GetProjectList
 @using Microsoft.AspNetCore.WebUtilities
 @using Business.Common.Extensions
+@using System.Security.Cryptography
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 
@@ -50,15 +51,36 @@
 }
 else
 {
-    foreach (var project in ProjectsList.Projects)
+    <table class="table table-bordered table-striped" style="width:100%">
+        <thead>
+        <tr>
+            <th>Название проекта</th>
+            <th>Дата начала проекта</th>
+            <th>
+                Дата финиша проекта
+            </th>
+            <th>Приоритет</th>
+            <th>Кнопки управления</th>
+        </tr>
+        </thead>
+    <tbody>
+    @foreach (var project in ProjectsList.Projects)
     {
-        <p>@project.Name
-            <button class="btn btn-warning" @onclick="() => EditProject(project.Id)">Редактировать</button>
-            <button class="btn btn-danger" @onclick="async () => await DeleteProject(project.Id)">Удалить</button>
-            <button class="btn btn-primary" @onclick="() => ManageProject(project.Id)">Управление проектом</button>
-            <button class="btn btn-primary" @onclick="() => TasksProject(project.Id)">Задачи проекта</button>
-        </p>
+        <tr>
+            <td>@project.Name</td>
+            <td>@project.DateBeginning.ToShortDateString()</td>
+            <td>@project.DateEnd.ToShortDateString()</td>
+            <td>@project.Priority</td>
+            <td>
+                <button class="btn btn-warning" @onclick="() => EditProject(project.Id)">Редактировать</button>
+                <button class="btn btn-danger" @onclick="async () => await DeleteProject(project.Id)">Удалить</button>
+                <button class="btn btn-primary" @onclick="() => ManageProject(project.Id)">Управление проектом</button>
+                <button class="btn btn-primary" @onclick="() => TasksProject(project.Id)">Задачи проекта</button>
+            </td>
+        </tr>
     }
+    </tbody>
+    </table>
 }
 
 @code {
