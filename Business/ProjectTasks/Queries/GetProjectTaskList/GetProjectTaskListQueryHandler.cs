@@ -23,7 +23,7 @@ namespace Business.ProjectTasks.Queries.GetProjectTaskList
             CancellationToken cancellationToken)
         {
             var query = _dbContext.ProjectTasks.AsQueryable();
-
+            query = query.Where(t => t.ProjectId == request.ProjectId);
             // Фильтрация
             if (request.AuthorId!=null)
             {

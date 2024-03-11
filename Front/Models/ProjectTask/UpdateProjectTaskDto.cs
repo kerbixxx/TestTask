@@ -1,13 +1,15 @@
 ﻿using AutoMapper;
+using Business.Common.Mappings;
 using Business.ProjectTasks.Commands.CreateProjectTask;
 using Business.ProjectTasks.Commands.UpdateProjectTask;
 using Data.Enums;
 
 namespace Front.Models.ProjectTask
 {
-    public class UpdateProjectTaskDto
+    public class UpdateProjectTaskDto : IMapWith<UpdateProjectTaskCommand>
     {
         public int Id { get; set; }
+        public string ExecutorId { get; set; }
         public string Name { get; set; }
         public Status Status { get; set; }
         public string Description { get; set; }
@@ -18,6 +20,8 @@ namespace Front.Models.ProjectTask
             profile.CreateMap<UpdateProjectTaskDto, UpdateProjectTaskCommand>()
                 .ForMember(ptCommand => ptCommand.Id,
                     opt => opt.MapFrom(ptDto => ptDto.Id))
+                .ForMember(ptCommand => ptCommand.ExecutorId,
+                    opt => opt.MapFrom(ptDto => ptDto.ExecutorId))
                 .ForMember(ptCommand => ptCommand.Name,
                     opt => opt.MapFrom(ptDto => ptDto.Name))
                 .ForMember(ptCommand => ptCommand.Status,

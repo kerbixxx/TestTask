@@ -1,0 +1,92 @@
+﻿@page "/project/tasks/create/{Id}"
+@using Business.Employees.Queries.GetEmployeeList
+@using Front.Models.ProjectTask
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+<h3>Создание задачи проекта</h3>
+
+<EditForm Model="command" OnValidSubmit="SubmitForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label for="name">Название задачи</label>
+        <InputText id="name" @bind-Value="command.Name"></InputText>
+    </div>
+    <div class="form-group">
+        <label for="authorId">Автор задачи</label>
+        <InputSelect id="authorId" @bind-Value="command.AuthorId">
+            <option value="">Выберите автора</option>
+            @if (EmployeeList.Employees != null)
+            {
+                @foreach (var employee in EmployeeList.Employees)
+                {
+                    <option value="@employee.Id">@employee.SecondName @employee.Name @employee.Patronymic</option>
+                }
+            }
+        </InputSelect>
+    </div>
+    <div class="form-group">
+        <label for="executorId">Исполнитель задачи</label>
+        <InputSelect id="executorId" @bind-Value="command.ExecutorId">
+            <option value="">Выберите исполнителя</option>
+            @if (EmployeeList.Employees != null)
+            {
+                @foreach (var employee in EmployeeList.Employees)
+                {
+                    <option value="@employee.Id">@employee.SecondName @employee.Name @employee.Patronymic</option>
+                }
+            }
+        </InputSelect>
+    </div>
+    <div class="form-group">
+        <label for="Status">Статус</label>
+        <InputSelect id="Status" @bind-Value="command.Status">
+            @foreach (var status in Enum.GetValues(typeof(Data.Enums.Status)))
+            {
+                <option value="@status">@status</option>
+            }
+        </InputSelect>
+    </div>
+    <div class="form-group">
+        <label for="description">Описание</label>
+        <InputText id="description" @bind-Value="command.Description"></InputText>
+    </div>
+    <div class="form-group">
+        <label for="priority">Приоритет</label>
+        <InputNumber id="priority" @bind-Value="command.Priority"></InputNumber>
+    </div>
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    <a href="/project/tasks/@int.Parse(Id)" class="mb-4">
+        <div class="col-sm-6">
+            <button type="button" class="btn btn-primary">Назад</button>
+        </div>
+    </a>
+</EditForm>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    CreateProjectTaskDto command { get; set; }
+    string errorMessage { get; set; }
+    EmployeeListVm EmployeeList { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        command = new();
+        EmployeeList = await HttpClient.GetFromJsonAsync<EmployeeListVm>("employee");
+    }
+
+    private async Task SubmitForm()
+    {
+        command.ProjectId = int.Parse(Id);
+        var result = await HttpClient.PostAsJsonAsync($"project/{int.Parse(Id)}/task", command);
+        if (result.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo($"/project/tasks/{int.Parse(Id)}");
+        }
+        else
+        {
+            errorMessage = result.ReasonPhrase;
+        }
+    }
+}

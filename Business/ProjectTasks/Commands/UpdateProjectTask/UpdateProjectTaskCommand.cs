@@ -6,6 +6,7 @@ namespace Business.ProjectTasks.Commands.UpdateProjectTask
     public class UpdateProjectTaskCommand : IRequest
     {
         public int Id { get; set; }
+        public string ExecutorId { get; set; }
         public string Name { get; set; }
         public Status Status { get; set; }
         public string Description { get; set; }

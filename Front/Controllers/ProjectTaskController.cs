@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Business.Employees.Commands.UpdateEmployee;
 using Business.ProjectTasks.Commands.CreateProjectTask;
 using Business.ProjectTasks.Commands.DeleteProjectTask;
 using Business.ProjectTasks.Commands.ReassignProjectTask;
+using Business.ProjectTasks.Commands.UpdateProjectTask;
 using Business.ProjectTasks.Queries.GetProjectTaskDetails;
 using Business.ProjectTasks.Queries.GetProjectTaskList;
 using Data.Enums;
@@ -10,7 +12,7 @@ using Front.Models.ProjectTask;
 
 namespace Front.Controllers
 {
-    [Route("api/project/task")]
+    [Route("api/project/{projectId}/task")]
     public class ProjectTaskController : BaseController
     {
         private readonly IMapper _mapper;
@@ -23,10 +25,12 @@ namespace Front.Controllers
             [FromQuery] Status? status,
             [FromQuery] int? priority,
             [FromQuery] string? sortBy,
-            [FromQuery] string? sortOrder)
+            [FromQuery] string? sortOrder,
+            int projectId)
         {
             var query = new GetProjectTaskListQuery()
             {
+                ProjectId = projectId,
                 AuthorId = authorId,
                 ExecutorId = executorId,
                 Status = status,
@@ -39,11 +43,12 @@ namespace Front.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProjectTaskDetailsVm>> Get(int id)
+        public async Task<ActionResult<ProjectTaskDetailsVm>> Get(int projectId,int id)
         {
             var query = new GetProjectTaskDetailsQuery()
             {
-                Id = id
+                Id = id,
+                ProjectId = projectId
             };
             var vm = await Mediator.Send(query);
             return Ok(vm);
@@ -60,7 +65,7 @@ namespace Front.Controllers
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] UpdateProjectTaskDto updateProjectTaskDto)
         {
-            var command = _mapper.Map<UpdateProjectTaskDto>(updateProjectTaskDto);
+            var command = _mapper.Map<UpdateProjectTaskCommand>(updateProjectTaskDto);
             await Mediator.Send(command);
             return NoContent();
         }

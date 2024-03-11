@@ -8,6 +8,8 @@ namespace Business.ProjectTasks.Queries.GetProjectTaskList
 {
     public class ProjectTaskLookupDto : IMapWith<ProjectTask>
     {
+        public int Id { get; set; }
+        public int ProjectId { get; set; }
         public string Name { get; set; }
         public Status Status { get; set; }
         public string Description { get; set; }
@@ -16,6 +18,10 @@ namespace Business.ProjectTasks.Queries.GetProjectTaskList
         public void Mapping(Profile profile)
         {
             profile.CreateMap<ProjectTask, ProjectTaskLookupDto>()
+                .ForMember(ptVm => ptVm.Id,
+                    opt => opt.MapFrom(projectTask => projectTask.Id))
+                .ForMember(ptVm => ptVm.ProjectId,
+                    opt => opt.MapFrom(projectTask => projectTask.ProjectId))
                 .ForMember(ptVm => ptVm.Name,
                     opt => opt.MapFrom(projectTask => projectTask.Name))
                 .ForMember(ptVm => ptVm.Status,

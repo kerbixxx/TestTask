@@ -56,6 +56,7 @@ else
             <button class="btn btn-warning" @onclick="() => EditProject(project.Id)">Редактировать</button>
             <button class="btn btn-danger" @onclick="async () => await DeleteProject(project.Id)">Удалить</button>
             <button class="btn btn-primary" @onclick="() => ManageProject(project.Id)">Управление проектом</button>
+            <button class="btn btn-primary" @onclick="() => TasksProject(project.Id)">Задачи проекта</button>
         </p>
     }
 }
@@ -104,5 +105,10 @@ else
     private void ManageProject(int id)
     {
         NavigationManager.NavigateTo($"project/manage/{id}");
+    }
+
+    private void TasksProject(int id)
+    {
+        NavigationManager.NavigateTo($"project/tasks/{id}");
     }
 }

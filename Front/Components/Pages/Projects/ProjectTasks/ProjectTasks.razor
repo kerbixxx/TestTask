@@ -1,0 +1,64 @@
+﻿@page "/project/tasks/{Id}"
+@using Business.ProjectTasks.Queries.GetProjectTaskList
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+<a href="/project/tasks/create/@int.Parse(Id)" class="row mb-4">
+    <div class="col-sm-6">
+        <button type="button" class="btn btn-primary">Добавить задачу в проект</button>
+    </div>
+</a>
+<h3>Задачи проекта</h3>
+<div class="alltasks" style="display:flex">
+
+@if (projectTaskList.ProjectTasks == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    foreach (var task in projectTaskList.ProjectTasks)
+    {
+        <div class="task">
+            <p>Название задачи: @task.Name;</p>
+            <p>Описание: @task.Description</p>
+            <p>Статус задачи: @task.Status</p>
+            <p>Приоритет: @task.Priority</p>
+            <p>
+                <button class="btn btn-warning" @onclick="() => EditProjectTask(task.Id)">Редактировать</button>
+                <button class="btn btn-danger" @onclick="async () => DeleteProjectTask(task.Id)">Удалить</button>
+            </p>
+        </div>
+    }
+}
+</div>
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    public ProjectTaskListVm projectTaskList { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await FilterProjects();
+    }
+
+    private async Task FilterProjects()
+    {
+        projectTaskList = await HttpClient.GetFromJsonAsync<ProjectTaskListVm>($"project/{int.Parse(Id)}/task");
+    }
+
+    private void EditProjectTask(int id)
+    {
+        NavigationManager.NavigateTo($"/project/{int.Parse(Id)}/task/edit/{id}");
+    }
+
+    private async Task DeleteProjectTask(int id)
+    {
+        var response = await HttpClient.DeleteAsync($"project/{int.Parse(Id)}/task/{id}");
+        if (response.IsSuccessStatusCode)
+        {
+            await FilterProjects();
+            StateHasChanged();
+        }
+    }
+}

@@ -24,6 +24,7 @@ namespace Business.ProjectTasks.Commands.UpdateProjectTask
             entity.Description = request.Description;
             entity.Status = request.Status;
             entity.Priority = request.Priority;
+            entity.ExecutorId = request.ExecutorId;
 
             _dbContext.ProjectTasks.Update(entity);
             await _dbContext.SaveChangesAsync(cancellationToken);
