@@ -1,5 +1,8 @@
 ﻿@page "/project/tasks/{Id}"
 @using Business.ProjectTasks.Queries.GetProjectTaskList
+@using Data.Enums
+@using Business.Employees.Queries.GetEmployeeList
+@using Business.Common.Extensions
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 <a href="/project/tasks/create/@int.Parse(Id)" class="row mb-4">
@@ -7,6 +10,63 @@
         <button type="button" class="btn btn-primary">Добавить задачу в проект</button>
     </div>
 </a>
+<form @onsubmit="FilterTasks">
+    <div class="form-group">
+        <label for="status">Статус задачи:</label>
+        <InputSelect id="Status" @bind-Value="status">
+            @foreach (var status in Enum.GetValues(typeof(Data.Enums.Status)))
+            {
+                <option value="@status">@status</option>
+            }
+            <option value="">None</option>
+        </InputSelect>
+    </div>
+    <div class="form-group">
+        <label for="priority">Приоритет:</label>
+        <input id="priority" @bind="priority"/>
+    </div>
+    <div class="form-group">
+        <label for="executorId">Исполнитель задачи</label>
+        <InputSelect id="executorId" @bind-Value="executorId">
+            <option value="">Выберите исполнителя</option>
+            @if (EmployeeList.Employees != null)
+            {
+                @foreach (var employee in EmployeeList.Employees)
+                {
+                    <option value="@employee.Id">@employee.SecondName @employee.Name @employee.Patronymic</option>
+                }
+            }
+        </InputSelect>
+    </div>
+    <div class="form-group">
+        <label for="authorId">Автор задачи</label>
+        <InputSelect id="authorId" @bind-Value="authorId">
+            <option value="">Выберите исполнителя</option>
+            @if (EmployeeList.Employees != null)
+            {
+                @foreach (var employee in EmployeeList.Employees)
+                {
+                    <option value="@employee.Id">@employee.SecondName @employee.Name @employee.Patronymic</option>
+                }
+            }
+        </InputSelect>
+    </div>
+    <div class="form-group">
+        <label for="sortBy">Сортировать по:</label>
+        <select id="sortBy" @bind="sortBy">
+            <option value="status">Статус</option>
+            <option value="priority">Приоритет</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="sortOrder">Порядок сортировки:</label>
+        <select id="sortOrder" @bind="sortOrder">
+            <option value="asc">По возрастанию</option>
+            <option value="desc">По убыванию</option>
+        </select>
+    </div>
+    <button type="submit">Фильтровать</button>
+</form>
 <h3>Задачи проекта</h3>
 <div class="alltasks" style="display:flex">
 
@@ -16,35 +76,67 @@
 }
 else
 {
-    foreach (var task in projectTaskList.ProjectTasks)
+        <table class="table table-bordered table-striped" style="width:100%">
+        <thead>
+        <tr>
+            <td>Название задачи</td>
+            <td>Описание</td>
+            <td>Статус задачи</td>
+            <td>Приоритет</td>
+            <td>Кнопки управления</td>
+        </tr>
+        </thead>
+        <tbody>
+    @foreach (var task in projectTaskList.ProjectTasks)
     {
-        <div class="task">
-            <p>Название задачи: @task.Name;</p>
-            <p>Описание: @task.Description</p>
-            <p>Статус задачи: @task.Status</p>
-            <p>Приоритет: @task.Priority</p>
-            <p>
+        <tr>
+            <th>@task.Name</th>
+            <th>@task.Description</th>
+            <th>@task.Status</th>
+            <th>@task.Priority</th>
+            <th>
                 <button class="btn btn-warning" @onclick="() => EditProjectTask(task.Id)">Редактировать</button>
                 <button class="btn btn-danger" @onclick="async () => DeleteProjectTask(task.Id)">Удалить</button>
-            </p>
-        </div>
+            </th>
+        </tr>
     }
+        </tbody>
+    </table>
 }
 </div>
 @code {
     [Parameter]
     public string Id { get; set; }
 
+    Status? status;
+    int? priority;
+    string? sortBy;
+    string? sortOrder;
+    string? authorId;
+    string? executorId;
+
     public ProjectTaskListVm projectTaskList { get; set; } = new();
+    public EmployeeListVm EmployeeList { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
-        await FilterProjects();
+        EmployeeList = await HttpClient.GetFromJsonAsync<EmployeeListVm>("employee");
+        await FilterTasks();
     }
 
-    private async Task FilterProjects()
+    private async Task FilterTasks()
     {
-        projectTaskList = await HttpClient.GetFromJsonAsync<ProjectTaskListVm>($"project/{int.Parse(Id)}/task");
+        var queryString = new Dictionary<string, string>()
+        {
+            { "authorId", authorId },
+            { "executorId", executorId },
+            { "status", status.ToString() },
+            { "priority", priority.ToString() },
+            { "sortBy", sortBy },
+            { "sortOrder", sortOrder }
+        }.Where(kvp => kvp.Value != null).ToQueryString();
+
+        projectTaskList = await HttpClient.GetFromJsonAsync<ProjectTaskListVm>($"project/{int.Parse(Id)}/task?{queryString}");
     }
 
     private void EditProjectTask(int id)
@@ -57,7 +149,7 @@ else
         var response = await HttpClient.DeleteAsync($"project/{int.Parse(Id)}/task/{id}");
         if (response.IsSuccessStatusCode)
         {
-            await FilterProjects();
+            await FilterTasks();
             StateHasChanged();
         }
     }
