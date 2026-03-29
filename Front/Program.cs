@@ -45,12 +45,11 @@ builder.Services.AddIdentity<Employee, IdentityRole>()
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
-    // Параметры пароля
-    options.Password.RequireDigit = false; // Не требует цифры
-    options.Password.RequiredLength = 4; // Минимальная длина 4 символа
-    options.Password.RequireNonAlphanumeric = false; // Не требует не-алфавитно-цифровый символ
-    options.Password.RequireUppercase = false; // Не требует символ верхнего регистра
-    options.Password.RequireLowercase = false; // Не требует символ нижнего регистра
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 4;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = false;
 });
 
 builder.Services.AddControllers();
@@ -73,11 +72,9 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
